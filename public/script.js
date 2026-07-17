@@ -1,6 +1,6 @@
 // ============ API CONFIGURATION ============
 // This automatically works on both localhost and Railway!
-const API_URL = window.location.origin + '/api';
+const API_URL = 'https://electricity-billing-system-production-4fa5.up.railway.app/api';
 
 let chartInstance = null;
 
