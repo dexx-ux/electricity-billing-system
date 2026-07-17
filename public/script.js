@@ -1,4 +1,7 @@
-const API_URL = 'https://electricity-billing-system-production-4fa5.up.railway.app/api';
+// ============ API CONFIGURATION ============
+// This automatically works on both localhost and Railway!
+const API_URL = window.location.origin + '/api';
+
 let chartInstance = null;
 
 // ============ SIDEBAR TOGGLE ============
@@ -6,7 +9,6 @@ function toggleSidebar() {
     document.getElementById('sidebar').classList.toggle('open');
 }
 
-// Close sidebar when clicking outside on mobile
 document.addEventListener('click', function(e) {
     const sidebar = document.getElementById('sidebar');
     const toggleBtn = document.querySelector('.toggle-sidebar');
@@ -175,7 +177,7 @@ async function loadDashboard(container) {
             <div class="alert alert-warning" style="border-radius: 12px; padding: 2rem;">
                 <i class="fas fa-exclamation-triangle me-2"></i>
                 <strong>Cannot connect to server.</strong> 
-                <p class="mt-2 mb-0">Make sure the backend is running (node server.js).</p>
+                <p class="mt-2 mb-0">Make sure the backend is running.</p>
             </div>
         `;
     }
