@@ -1,4 +1,4 @@
-const API_URL = '/api';
+const API_URL = 'https://electricity-billing-system-production-4fa5.up.railway.app/api';
 let chartInstance = null;
 
 // ============ SIDEBAR TOGGLE ============
