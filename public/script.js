@@ -1157,5 +1157,60 @@ async function loadReports(container) {
     }
 }
 
+// ============ CUSTOMER PORTAL LINK ============
+function openCustomerPortal() {
+    const modal = new bootstrap.Modal(document.getElementById('formModal'));
+    document.getElementById('formModalLabel').textContent = 'Open Customer Portal';
+    
+    fetch(API_URL + '/customers')
+        .then(res => res.json())
+        .then(customers => {
+            if (customers.length === 0) {
+                document.getElementById('formModalBody').innerHTML = `
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        No customers found. Please add customers first.
+                    </div>
+                `;
+                modal.show();
+                return;
+            }
+            
+            document.getElementById('formModalBody').innerHTML = `
+                <form id="portalForm" class="modal-form">
+                    <div class="mb-2">
+                        <label>Select Customer *</label>
+                        <select class="form-select" id="portal_customer" required>
+                            <option value="">-- Select Customer --</option>
+                            ${customers.map(c => 
+                                `<option value="${c.customer_id}">${c.fullname} (${c.meter_number})</option>`
+                            ).join('')}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary-custom w-100 mt-2">
+                        <i class="fas fa-external-link-alt me-2"></i>Open Portal
+                    </button>
+                </form>
+            `;
+            
+            document.getElementById('portalForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const customerId = document.getElementById('portal_customer').value;
+                if (customerId) {
+                    window.open(`/customer.html?id=${customerId}`, '_blank');
+                    modal.hide();
+                } else {
+                    alert('Please select a customer');
+                }
+            });
+            
+            modal.show();
+        })
+        .catch(error => {
+            alert('Error loading customers: ' + error.message);
+        });
+}
+
+
 // ============ INIT ============
 loadSection('dashboard');

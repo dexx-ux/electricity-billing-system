@@ -354,8 +354,43 @@ app.get('/api/reports/monthly', async (req, res) => {
   }
 });
 
+
+// ============ CUSTOMER VIEW ROUTE ============
+app.get('/api/customer/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        // Get customer details
+        const customerResult = await pool.query('SELECT * FROM customers WHERE customer_id = $1', [id]);
+        if (customerResult.rows.length === 0) {
+            return res.status(404).json({ error: 'Customer not found' });
+        }
+        const customer = customerResult.rows[0];
+
+        // Get their bills
+        const billsResult = await pool.query('SELECT * FROM bills WHERE customer_id = $1 ORDER BY bill_id DESC', [id]);
+        
+        // Get their payments
+        const paymentsResult = await pool.query(`
+            SELECT p.* FROM payments p
+            JOIN bills b ON p.bill_id = b.bill_id
+            WHERE b.customer_id = $1
+            ORDER BY p.payment_date DESC
+        `, [id]);
+
+        res.json({
+            customer: customer,
+            bills: billsResult.rows,
+            payments: paymentsResult.rows
+        });
+    } catch (err) {
+        console.error('❌ Customer view error:', err.message);
+        res.status(500).json({ error: err.message });
+    }
+});
+
 // ============ START SERVER ============
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
   console.log(`📊 System ready - Electricity Billing Management`);
 });
+
