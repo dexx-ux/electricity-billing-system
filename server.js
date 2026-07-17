@@ -102,15 +102,28 @@ app.get('/api/customers', async (req, res) => {
 });
 
 app.post('/api/customers', async (req, res) => {
+  console.log('📝 Received customer data:', req.body);
+  
   const { fullname, address, contact_number, email, meter_number, status } = req.body;
+  
+  // Check if required fields are present
+  if (!fullname || !meter_number) {
+    console.log('❌ Missing required fields!');
+    return res.status(400).json({ error: 'Full name and meter number are required' });
+  }
+  
   try {
+    console.log('💾 Inserting customer into database...');
     const result = await pool.query(
       'INSERT INTO customers (fullname, address, contact_number, email, meter_number, status) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
       [fullname, address, contact_number, email, meter_number, status || 'Active']
     );
+    console.log('✅ Customer added successfully:', result.rows[0]);
     res.json(result.rows[0]);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error('❌ Database error:', err.message);
+    console.error('❌ Full error:', err);
+    res.status(500).json({ error: err.message, details: err.stack });
   }
 });
 
