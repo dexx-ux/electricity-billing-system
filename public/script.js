@@ -1,4 +1,4 @@
-const API_URL = window.location.origin + '/api';
+const API_URL = '/api';
 let chartInstance = null;
 
 // ============ SIDEBAR TOGGLE ============
